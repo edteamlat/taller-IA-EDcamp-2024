@@ -79,7 +79,7 @@ function HomeContent() {
   }
 
   return (
-    <main className="flex flex-col items-center justify-center text-center px-4 h-screen">
+    <main className="flex flex-col items-center justify-center text-center px-4">
       <h2 className="text-3xl font-bold mb-4">
         ¿Qué análisis quieres hacer hoy?
       </h2>

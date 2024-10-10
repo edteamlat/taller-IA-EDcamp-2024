@@ -3,6 +3,7 @@ import localFont from "next/font/local"
 import "./globals.css"
 import { ViewTransitions, Link } from "next-view-transitions"
 import { ChatProvider } from "@/context/ChatContext"
+import { useEffect, useState } from "react"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -20,6 +21,14 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const [isLoggedIn, setIsLoggedIn] = useState(true)
+
+  useEffect(() => {
+    // Verifica si el token existe en localStorage
+    const token = localStorage.getItem("authToken")
+    setIsLoggedIn(!!token)
+  }, [])
+
   return (
     <ViewTransitions>
       <html lang="en">
@@ -34,18 +43,24 @@ export default function RootLayout({
                 </h1>
               </Link>
               <div>
-                <Link
-                  href="/login"
-                  className="mr-4 bg-ed-red-500 px-4 py-2 rounded-md"
-                >
-                  Iniciar sesión
-                </Link>
-                <Link
-                  href="/registro"
-                  className="border border-ed-white px-4 py-2 rounded-md"
-                >
-                  Crear cuenta
-                </Link>
+                {!isLoggedIn ? (
+                  <Link
+                    href="/login"
+                    className="mr-4 bg-ed-red-500 px-4 py-2 rounded-md"
+                  >
+                    Iniciar sesión
+                  </Link>
+                ) : (
+                  <button
+                    onClick={() => {
+                      localStorage.removeItem("authToken")
+                      setIsLoggedIn(false)
+                    }}
+                    className="mr-4 border border-ed-text text-ed-white px-4 py-2 rounded-md"
+                  >
+                    Cerrar sesión
+                  </button>
+                )}
               </div>
             </header>
             <ChatProvider>{children}</ChatProvider>

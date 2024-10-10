@@ -1,11 +1,8 @@
 "use client"
 import { loginUser } from "@/helpers/auth"
-import { useRouter } from "next/navigation"
 import React, { useState } from "react"
 
 function Login() {
-  const router = useRouter()
-
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [error, setError] = useState("")
@@ -18,7 +15,7 @@ function Login() {
 
     try {
       await loginUser(username, password)
-      router.push("/chat")
+      window.location.href = "/"
     } catch (error) {
       console.error("Login failed:", error)
       setError("Error al iniciar sesión. Intente de nuevo.")
