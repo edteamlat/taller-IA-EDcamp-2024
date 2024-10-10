@@ -1,7 +1,8 @@
-import type { Metadata } from "next"
+"use client"
 import localFont from "next/font/local"
 import "./globals.css"
 import { ViewTransitions, Link } from "next-view-transitions"
+import { ChatProvider } from "@/context/ChatContext"
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -13,11 +14,6 @@ const geistMono = localFont({
   variable: "--font-geist-mono",
   weight: "100 900",
 })
-
-export const metadata: Metadata = {
-  title: "EDprompt",
-  description: "Analiza las finanzas de tu negocio",
-}
 
 export default function RootLayout({
   children,
@@ -52,7 +48,7 @@ export default function RootLayout({
                 </Link>
               </div>
             </header>
-            {children}
+            <ChatProvider>{children}</ChatProvider>
             <footer className="h-16 flex items-center justify-center">
               <p className="text-xs">Hecho en Latam - EDcamp Lima 2024</p>
             </footer>

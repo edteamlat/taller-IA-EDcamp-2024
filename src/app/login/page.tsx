@@ -1,31 +1,91 @@
-import { Link } from "next-view-transitions"
+"use client"
+import { loginUser } from "@/helpers/auth"
+import { useRouter } from "next/navigation"
+import React, { useState } from "react"
 
-// pages/index.js
-export default function Login() {
+function Login() {
+  const router = useRouter()
+
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [error, setError] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+
+  const handleLogin = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setError("")
+    setIsLoading(true)
+
+    try {
+      await loginUser(username, password)
+      router.push("/chat")
+    } catch (error) {
+      console.error("Login failed:", error)
+      setError("Error al iniciar sesión. Intente de nuevo.")
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
   return (
-    <main className="flex flex-col items-center justify-center text-center px-4">
-      <h2 className="text-3xl font-bold mb-4">Iniciar sesión</h2>
-      <div className="w-full max-w-md flex flex-col items-center bg-ed-brown-400 rounded-lg px-8 py-6 mb-6">
-        <input
-          className="w-full bg-transparent text-ed-white placeholder-ed-gray-500 border-b-2 border-ed-white mb-4 py-2 outline-none"
-          type="email"
-          placeholder="Correo electrónico"
-        />
-        <input
-          className="w-full bg-transparent text-ed-white placeholder-ed-gray-500 border-b-2 border-ed-white mb-4 py-2 outline-none"
-          type="password"
-          placeholder="Contraseña"
-        />
-        <button className="bg-ed-red-500 text-ed-white px-4 py-2 rounded-lg w-full mt-4">
-          Iniciar sesión
-        </button>
+    <div className="flex items-center justify-center px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8p-8 rounded-lg shadow-md">
+        <div>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-ed-text">
+            Inicia sesión
+          </h2>
+        </div>
+        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+          <div className="rounded-md shadow-sm -space-y-px">
+            <div>
+              <label htmlFor="username" className="sr-only">
+                Username
+              </label>
+              <input
+                type="email"
+                id="username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+                className="bg-ed-brown-400 appearance-none rounded-none relative block w-full px-3 py-4 border border-ed-gray-500 placeholder-ed-gray-500 text-ed-text rounded-t-md focus:outline-none focus:ring-ed-red-500 focus:border-ed-red-500 focus:z-10 sm:text-sm"
+                placeholder="Correo electrónico"
+              />
+            </div>
+            <div className="mt-4">
+              <label htmlFor="password" className="sr-only">
+                Password
+              </label>
+              <input
+                type="password"
+                id="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="bg-ed-brown-400 appearance-none rounded-none relative block w-full px-3 py-4 border border-ed-gray-500 placeholder-ed-gray-500 text-ed-text rounded-b-md focus:outline-none focus:ring-ed-red-500 focus:border-ed-red-500 focus:z-10 sm:text-sm"
+                placeholder="Contraseña"
+              />
+            </div>
+          </div>
+
+          {error && <div className="text-ed-red-500 text-sm mt-2">{error}</div>}
+
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-ed-red-500 hover:bg-ed-brown-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            >
+              {isLoading ? (
+                <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+              ) : (
+                "Ingresar"
+              )}
+            </button>
+          </div>
+        </form>
       </div>
-      <p className="text-ed-text">
-        ¿No tienes cuenta?{" "}
-        <Link href="/registro" className="text-ed-red-500">
-          Regístrate aquí
-        </Link>
-      </p>
-    </main>
+    </div>
   )
 }
+
+export default Login
